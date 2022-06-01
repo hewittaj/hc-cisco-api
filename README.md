@@ -1,8 +1,11 @@
 # hc-cisco-api
 This is an API to retrieve all spam messages for each user in the company.
 
-# Necessary Installs
+## Necessary Installs
 `pip install requests`
+
+## Notes
+- You will need to rename the .json-example to info.json and fill in your company's information to get this working properly.
 
 ## Resources Used
 - https://github.com/TheAlanNix/SMA-Example-Script/blob/master/sma_example.py
