@@ -19,6 +19,7 @@ server = loadedFile['smaUrl']
 # Setup our request using the server and username / password combo
 request = Wrapper_API(server, usrPass, loadedFile['userId'], loadedFile['userPassword'])
 
-request.getAllSpamByUser("endDate=2022-6-1T00:00:00.000Z&startDate=2022-5-28T00:00:00.000Z&quarantineType=spam&orderBy=date&orderDir=asc&envelopeRecipientFilterOperator=is&envelopeRecipientFilterValue=dlee@heartlandcoop.com", "ahewitt@heartlandcoop.com")
+response = request.getAllSpamByUser("ahewitt@heartlandcoop.com")
+
 
 #print(request.status_code) # Returns status code

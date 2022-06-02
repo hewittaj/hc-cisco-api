@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from time import strftime
 from urllib.request import HTTPBasicAuthHandler
 from requests.auth import HTTPBasicAuth
 import requests
@@ -56,7 +57,7 @@ class Wrapper_API(object):
             if r:
                 r.close()
 
-    def getAllSpamByUser(self, url, userEmail):
+    def getAllSpamByUser(self, userEmail):
         """
         Generic GET request to the ESA API with exception handling to retrieve 
         all spam that was quarantined for a specific user.
@@ -66,9 +67,6 @@ class Wrapper_API(object):
         self : Wrapper_API
             Object representing the API String to use.
 
-        url : string
-            URL for the SMA Appliance
-
         userEmail : string
             Email of the user to return all spam for
 
@@ -76,11 +74,14 @@ class Wrapper_API(object):
         -------
         Returns a json dump of all spam for specific user
         """
-        ("endDate=2022-6-1T00:00:00.000Z&startDate=2022-5-28T00:00:00.000Z&quarantineType=spam&orderBy=date&orderDir=asc&envelopeRecipientFilterOperator=is&envelopeRecipientFilterValue=dlee@heartlandcoop.com")
-        endDate = datetime.now().isoformat(timespec="milliseconds")
-        startDate = endDate - timedelta(days=31)
-        print(endDate)
-        print(startDate)
+
+        url = ""
+        # Get end date dynamically from today to last month/31 days
+        endDate = datetime.now().isoformat(timespec="minutes")
+        startDate = (datetime.fromisoformat(endDate) - timedelta(days=31)).isoformat(timespec="minutes")
+        
+        # Build url NOTE: timestamp seconds and milliseconds must be in all zeroes
+        url = f"endDate={endDate}:00.000Z&startDate={startDate}:00.000Z&" + "quarantineType=spam&orderBy=date" + "&orderDir=asc&envelopeRecipientFilterOperator=is&envelopeRecipientFilterValue=" + f"{userEmail}"
 
         ApiPath = self.server + self.api_base_path + url
         try:
@@ -89,7 +90,7 @@ class Wrapper_API(object):
             resp = r.text
             if (status_code == 200):
                 self.json_resp = json.loads(resp)
-                #print(self.json_resp)
+                print(self.json_resp)
                 return self.json_resp
             else:
                 r.raise_for_status()
