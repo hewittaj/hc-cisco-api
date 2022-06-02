@@ -23,7 +23,7 @@ request = Wrapper_API(server, usrPass, loadedFile['userId'], loadedFile['userPas
 response = request.getAllUsersSpam()
 
 # Dump to a .json file
-with open('test.json', 'w', encoding='utf-8') as f:
+with open('addresses.json', 'w', encoding='utf-8') as f:
     json.dump(response, f, ensure_ascii=False, indent=4)
 
 #print(request.status_code) # Returns status code
