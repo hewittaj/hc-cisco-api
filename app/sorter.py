@@ -41,6 +41,7 @@ def getAddresses():
 def getEmailsByUser(addresses):
     # Variable declaration
     mailByUser = {}
+    tmp = {}
     i = 0
 
     # Load quarantined_mail json 
@@ -56,8 +57,10 @@ def getEmailsByUser(addresses):
         for item in dataJson:
             lowercase = str(item['attributes']['envelopeRecipient'][0]).lower()
             if email == lowercase:
-                mailByUser.update({email:{i: item}})
-            i += 1
+                tmp.update({str(i): item})
+                i += 1
+        mailByUser.update({email:tmp})
+        tmp = {}
         i = 0
 
     # Dump python dictionary to json
