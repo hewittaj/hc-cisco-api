@@ -31,13 +31,27 @@ class Wrapper_API(object):
         self.api_base_path = "/sma/api/v2.0/quarantine/messages?"
         self.json_resp = {}
 
-    def getAllUsersSpam(self, url):
+    def getAllUsersSpam(self):
         """
-        Generic GET request to the ESA API with exception handling to retrieve 
-        all spam that was quarantined for all users.
+        Generic GET request to the ESA API with exception handling to retrieve all spam that was quarantined for all users.
+
+        Parameters
+        -------
+        self : Wrapper_API
+            Object representing the API String to use.
+
+        Returns
+        -------
+        Returns a json dump of all spam for all users.
         """
 
-        ("endDate=2022-6-1T00:00:00.000Z&startDate=2022-5-28T00:00:00.000Z&quarantineType=spam&orderBy=date&orderDir=asc&envelopeRecipientFilterOperator=is&envelopeRecipientFilterValue=dlee@heartlandcoop.com")
+        url = ""
+        # Get end date dynamically from today to last month/31 days
+        endDate = datetime.now().isoformat(timespec="minutes")
+        startDate = (datetime.fromisoformat(endDate) - timedelta(days=31)).isoformat(timespec="minutes")
+        
+        # Build url NOTE: timestamp seconds and milliseconds must be in all zeroes
+        url = f"endDate={endDate}:00.000Z&startDate={startDate}:00.000Z&" + "quarantineType=spam&orderBy=date&orderDir=asc"
 
         ApiPath = self.server + self.api_base_path + url
         try:
