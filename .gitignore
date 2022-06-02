@@ -1,4 +1,10 @@
-info.json
+# JSON Files
 addresses.json
+info.json
+quarantined_mail.json
+
+# Text Files
 addresses.txt
+
+# Cache Files
 __pycache__

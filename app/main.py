@@ -1,11 +1,14 @@
 import json
 import os
 import requests
+from sorter import *
 from wrapper_api import Wrapper_API
 
 # Variables
 usrPass = ""
 server = ""
+addresses = []
+emailsByUser = {}
 
 # Retrieve user/pass/server
 
@@ -19,11 +22,17 @@ server = loadedFile['smaUrl']
 # Setup our request using the server and username / password combo
 request = Wrapper_API(server, usrPass, loadedFile['userId'], loadedFile['userPassword'])
 
-#response = request.getAllSpamByUser("ahewitt@heartlandcoop.com")
 response = request.getAllUsersSpam()
 
-# Dump to a .json file
-with open('addresses.json', 'w', encoding='utf-8') as f:
+# Dump API response to a .json file
+with open('quarantined_mail.json', 'w', encoding='utf-8') as f:
     json.dump(response, f, ensure_ascii=False, indent=4)
+
+# Get addresses and load into a list
+addresses = getAddresses()
+
+# Get emails by each user and load it into dictionary
+emailsByUser = getEmailsByUser(addresses)
+
 
 #print(request.status_code) # Returns status code

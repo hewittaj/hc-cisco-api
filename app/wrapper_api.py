@@ -60,7 +60,7 @@ class Wrapper_API(object):
             resp = r.text
             if (status_code == 200):
                 self.json_resp = json.loads(resp)
-                print(self.json_resp)
+                #print(self.json_resp) # Remove comment if testing
                 return self.json_resp
             else:
                 r.raise_for_status()
@@ -104,7 +104,7 @@ class Wrapper_API(object):
             resp = r.text
             if (status_code == 200):
                 self.json_resp = json.loads(resp)
-                print(self.json_resp)
+                #print(self.json_resp) # Remove comment if testing
                 return self.json_resp
             else:
                 r.raise_for_status()
