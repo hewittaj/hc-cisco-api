@@ -7,6 +7,7 @@ quarantined_mail.json
 
 # Text Files
 addresses.txt
+email_summary.txt
 
 # Cache Files
 __pycache__

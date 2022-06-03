@@ -30,14 +30,22 @@ def loadSpamEmails():
     date = ""
     fromAddress = ""
     subject = ""
-    
-    for email, value in fJson.items():
-        print(email)
-        for num, item in value.items():
-            #print(num)
 
-            f"{item['attributes']['subject']}"
-            f"{item['attributes']['date']}"
-            f"{str(item['attributes']['fromAddress'][0])}"
+    with open("email_summary.txt", "w", encoding='utf-8') as outfile:
+        outfile.write("---Email Summary---\n")
+        for email, value in fJson.items():
+            
+            outfile.write(f"Email: {email}\n")
+            for num, item in value.items():
+                #print(num)
+
+                date = f"{item['attributes']['subject']}"
+                fromAddress = f"{item['attributes']['date']}"
+                subject = f"{str(item['attributes']['fromAddress'][0])}"
+                outfile.write(f"\t{date}\n")
+                outfile.write(f"\t{fromAddress}\n")
+                outfile.write(f"\t{subject}\n")
+
+    outfile.close()
 
 loadSpamEmails()
