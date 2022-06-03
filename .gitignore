@@ -1,5 +1,6 @@
 # JSON Files
 addresses.json
+apppassword.json
 info.json
 mail_by_user.json
 quarantined_mail.json

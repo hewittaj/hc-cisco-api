@@ -2,7 +2,10 @@
 This is an API to retrieve all spam messages for each user in the company.
 
 ## Necessary Installs
+`pip install email`
+`pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib`
 `pip install requests`
+`pip install yagmail`
 
 ## Notes
 - You will need to rename the .json-example to info.json and fill in your company's information to get this working properly.
