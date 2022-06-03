@@ -13,8 +13,8 @@ def sendEmails():
     user = 'ahewitt.hcoop@gmail.com'
     app_password = json.loads(open('./apppassword.json').read())['app_password']
     to = "ahewitt@heartlandcoop.com"
-    subject = "test email"
-    content = ['mail body content']
+    subject = "Test"
+    content = ['Summary of quarantined emails.\n\n', open("email_summary.txt", "r", encoding='utf-8').read()]
 
     # Send email
     with yagmail.SMTP(user, app_password) as yag:
@@ -48,5 +48,5 @@ def loadSpamEmails():
                 outfile.write("\n")
 
     outfile.close()
-
-loadSpamEmails()
+sendEmails()
+#loadSpamEmails()
