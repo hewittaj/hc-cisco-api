@@ -39,12 +39,13 @@ def loadSpamEmails():
             for num, item in value.items():
                 #print(num)
 
-                date = f"{item['attributes']['subject']}"
-                fromAddress = f"{item['attributes']['date']}"
-                subject = f"{str(item['attributes']['fromAddress'][0])}"
+                subject = f"SUBJECT: {item['attributes']['subject']}"
+                date = f"DATE: {item['attributes']['date']}"
+                fromAddress = f"FROM ADDRESS: {str(item['attributes']['fromAddress'][0])}"
                 outfile.write(f"\t{date}\n")
                 outfile.write(f"\t{fromAddress}\n")
                 outfile.write(f"\t{subject}\n")
+                outfile.write("\n")
 
     outfile.close()
 
