@@ -23,7 +23,6 @@ def sendEmails():
     body = ""
     senderEmail = smtpSettings['from_email']
     receiverEmail = "ahewitt@heartlandcoop.com"
-    password = smtpSettings['password']
     portNo = smtpSettings['port']
     smtpServer = smtpSettings['smtp_server']
 
@@ -54,19 +53,38 @@ def sendEmails():
         f"attachment; filename= {textFile}",
     )
 
-    # Add attachment to message and convert message to string
-    message.attach(part)
-    text = message.as_string()
+    try:
+        # Add attachment to message and convert message to string
+        message.attach(part)
+        text = message.as_string()
 
-    # Log in to server using secure context and send email
-    server = smtplib.SMTP() # try 25, 465, 587
-    server.esmtp_features['auth'] = "LOGIN"
-    server.connect(smtpServer, portNo)
- 
-    #server.set_debuglevel(True)
+        # Log in to server using secure context and send email
+        server = smtplib.SMTP() # try 25, 465, 587
+        # server.set_debuglevel(True) # Can flip on to view debug
+        server.esmtp_features['auth'] = "LOGIN"
+        server.connect(smtpServer, portNo)
+        server.sendmail(senderEmail, receiverEmail, text)        
+        server.close()
 
-    server.sendmail(senderEmail, receiverEmail, text)
-    server.close()
+    except smtplib.SMTPAuthenticationError as e:
+        print("Failed to authenticate, email not sent")
+        print(e)
+        # Close server connection
+        server.close()  
+    except smtplib.SMTPRecipientsRefused as e:
+        print("SMTP Recipients refused, email not sent")
+        print(e)
+        # Close server connection
+        server.close()  
+    except smtplib.SMTPResponseException as e:
+        print("SMTP Response Exception, email not sent")
+        print(e)
+        # Close server connection
+        server.close()  
+    else:
+        print("Email sent successfully!")
+        # Close server connection
+        server.close()  
 
 
 def loadSpamEmails():
@@ -93,5 +111,3 @@ def loadSpamEmails():
                 outfile.write("\n")
 
     outfile.close()
-sendEmails()
-#loadSpamEmails()

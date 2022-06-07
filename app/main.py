@@ -1,6 +1,4 @@
 import json
-import os
-import requests
 from emails import *
 from sorter import *
 from wrapper_api import Wrapper_API
@@ -34,5 +32,9 @@ addresses = getAddresses()
 
 # Get emails by each user and load it into dictionary
 emailsByUser = getEmailsByUser(addresses)
+
+# Load spam emails and send to each user
+loadedEmails = loadSpamEmails()
+sendEmails()
 
 #print(request.status_code) # Returns status code
