@@ -1,28 +1,73 @@
 # --- Resources ---
 # https://towardsdatascience.com/automate-sending-emails-with-gmail-in-python-449cc0c3c317
 # https://github.com/kootenpv/yagmail
+# https://realpython.com/python-send-email/#option-2-setting-up-a-local-smtp-server
 
 # Imports
 from datetime import date
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+import base64
+import email
 import json
-import yagmail
+import smtplib, ssl
 
 # Main App
 def sendEmails():
-    # Variables
-    user = 'ahewitt.hcoop@gmail.com'
-    app_password = json.loads(open('./apppassword.json').read())['app_password']
-    to = "ahewitt@heartlandcoop.com"
-    subject = "Test"
-    content = ['Summary of quarantined emails.\n\n', open("email_summary.txt", "r", encoding='utf-8').read()]
+    # Load smtp settings and create variables
+    smtpSettings = json.loads(open('smtp_settings.json', 'r', encoding='utf-8').read())
+    subject = "Summary of quarantined emails"
+    body = ""
+    senderEmail = smtpSettings['from_email']
+    receiverEmail = "ahewitt@heartlandcoop.com"
+    password = smtpSettings['password']
+    portNo = smtpSettings['port']
+    smtpServer = smtpSettings['smtp_server']
 
-    # Send email
-    with yagmail.SMTP(user, app_password) as yag:
-        try:
-            yag.send(to, subject, content)
-            print("Email sent successfully")
-        except(yagmail.exceptions.YagConnectionError) as e:
-            print(e)
+    # Create a multipart message and set headers
+    message = MIMEMultipart()
+    message["From"] = senderEmail
+    message["To"] = receiverEmail
+    message["Subject"] = subject
+
+    # Add body to email
+    message.attach(MIMEText(body, "plain"))
+
+    textFile = "email_summary.txt"
+
+    # Open file in binary mode
+    with open(textFile, "rb") as attachment:
+        # Add file as application/octet-stream
+        # Email client can usually download this automatically as attachment
+        part = MIMEBase("application", "octet-stream")
+        part.set_payload(attachment.read())
+
+    # Encode file in ASCII characters to send by email
+    encoders.encode_base64(part)
+
+    # Add header as key/value pair to attachment part
+    part.add_header(
+        "Content-Disposition",
+        f"attachment; filename= {textFile}",
+    )
+
+    # Add attachment to message and convert message to string
+    message.attach(part)
+    text = message.as_string()
+
+    # Log in to server using secure context and send email
+    server = smtplib.SMTP() # try 25, 465, 587
+    server.esmtp_features['auth'] = "LOGIN"
+    server.connect(smtpServer, portNo)
+ 
+    #server.set_debuglevel(True)
+
+    server.sendmail(senderEmail, receiverEmail, text)
+    server.close()
+
 
 def loadSpamEmails():
     # Variables
