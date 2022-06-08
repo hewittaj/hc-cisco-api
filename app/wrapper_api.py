@@ -90,9 +90,9 @@ class Wrapper_API(object):
         """
 
         url = ""
-        # Get end date dynamically from today to last month/31 days
+        # Get end date dynamically from past 7 days
         endDate = datetime.now().isoformat(timespec="minutes")
-        startDate = (datetime.fromisoformat(endDate) - timedelta(days=31)).isoformat(timespec="minutes")
+        startDate = (datetime.fromisoformat(endDate) - timedelta(days=7)).isoformat(timespec="minutes")
         
         # Build url NOTE: timestamp seconds and milliseconds must be in all zeroes
         url = f"endDate={endDate}:00.000Z&startDate={startDate}:00.000Z&" + "quarantineType=spam&orderBy=date" + "&orderDir=asc&envelopeRecipientFilterOperator=is&envelopeRecipientFilterValue=" + f"{userEmail}"
@@ -114,3 +114,4 @@ class Wrapper_API(object):
         finally:
             if r:
                 r.close()
+

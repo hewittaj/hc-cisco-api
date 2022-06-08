@@ -89,7 +89,7 @@ def sendEmails():
 
 def loadSpamEmails():
     # Variables
-    fJson = json.loads(open('mail_by_user.json', 'r', encoding='utf-8').read())
+    fJson = json.loads(open('quarantined_mail.json', 'r', encoding='utf-8').read())
     date = ""
     fromAddress = ""
     subject = ""
@@ -99,7 +99,7 @@ def loadSpamEmails():
         for email, value in fJson.items():
             
             outfile.write(f"Email: {email}\n")
-            for num, item in value.items():
+            for item in value:
                 #print(num)
 
                 subject = f"SUBJECT: {item['attributes']['subject']}"
