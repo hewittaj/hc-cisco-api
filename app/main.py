@@ -31,9 +31,9 @@ with open(hc_emails, 'r', encoding="utf-8") as csvfile:
     datareader = list(csv.reader(csvfile))
     for row in datareader:
         response = request.getAllSpamByUser(row[1])
-        if(response['data'] == None or response['data'] == []): 
+        if(response['data'] == None or response['data'] == ['PrimarySmtpAddress'] or response['data'] == []): 
             # If no spam for user or a header row
-            print(row[1])
+            # print(row[1])
             continue
         else:
             all_spam[row[1]] = response['data']
@@ -51,6 +51,6 @@ with open('quarantined_mail.json', 'w', encoding='utf-8') as f:
 
 # Load spam emails and send to each user
 loadedEmails = loadSpamEmails()
-sendEmails()
+# sendEmails()
 
 #print(request.status_code) # Returns status code

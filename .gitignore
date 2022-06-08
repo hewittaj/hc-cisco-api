@@ -1,9 +1,12 @@
+# CSV Files
+hc_emails.csv
 # JSON Files
 addresses.json
 apppassword.json
 info.json
 mail_by_user.json
 quarantined_mail.json
+smtp_settings.json
 
 # Text Files
 addresses.txt

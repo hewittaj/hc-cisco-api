@@ -9,6 +9,7 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from prettytable import PrettyTable
 
 import base64
 import email
@@ -16,13 +17,12 @@ import json
 import smtplib, ssl
 
 # Main App
-def sendEmails():
+def sendEmails(receiverEmail, table):
     # Load smtp settings and create variables
     smtpSettings = json.loads(open('smtp_settings.json', 'r', encoding='utf-8').read())
     subject = "Summary of quarantined emails"
     body = ""
     senderEmail = smtpSettings['from_email']
-    receiverEmail = "ahewitt@heartlandcoop.com"
     portNo = smtpSettings['port']
     smtpServer = smtpSettings['smtp_server']
 
@@ -33,29 +33,30 @@ def sendEmails():
     message["Subject"] = subject
 
     # Add body to email
-    message.attach(MIMEText(body, "plain"))
+    # message.attach(MIMEText(body, "plain"))
+    message.attach(MIMEText(table, "html"))
 
-    textFile = "email_summary.txt"
+    # textFile = "email_summary.txt"
 
-    # Open file in binary mode
-    with open(textFile, "rb") as attachment:
-        # Add file as application/octet-stream
-        # Email client can usually download this automatically as attachment
-        part = MIMEBase("application", "octet-stream")
-        part.set_payload(attachment.read())
+    # # Open file in binary mode
+    # with open(textFile, "rb") as attachment:
+    #     # Add file as application/octet-stream
+    #     # Email client can usually download this automatically as attachment
+    #     part = MIMEBase("application", "octet-stream")
+    #     part.set_payload(attachment.read())
 
-    # Encode file in ASCII characters to send by email
-    encoders.encode_base64(part)
+    # # Encode file in ASCII characters to send by email
+    # encoders.encode_base64(part)
 
-    # Add header as key/value pair to attachment part
-    part.add_header(
-        "Content-Disposition",
-        f"attachment; filename= {textFile}",
-    )
+    # # Add header
+    # part.add_header(
+    #     "Content-Disposition",
+    #     f"attachment; filename= {textFile}",
+    # )
 
     try:
         # Add attachment to message and convert message to string
-        message.attach(part)
+        # message.attach(part)
         text = message.as_string()
 
         # Log in to server using secure context and send email
@@ -93,21 +94,65 @@ def loadSpamEmails():
     date = ""
     fromAddress = ""
     subject = ""
+    emailMessage = ""
 
-    with open("email_summary.txt", "w", encoding='utf-8') as outfile:
-        outfile.write("---Email Summary---\n")
-        for email, value in fJson.items():
+    # Loop through json file and create table to send as email
+    for email, value in fJson.items():
+        # Create fields
+        tableFields = ["Receiver Address", "Subject", "Date", "From Address"]
+        table = PrettyTable()
+        table.field_names = tableFields 
+
+        for item in value:
+            # Add info to variables
+            receiver = str(item['attributes']['envelopeRecipient'])
+            subject = item['attributes']['subject']
+            date = item['attributes']['date']
+            fromAddress = str(item['attributes']['fromAddress'][0])
+           
+            # Add row to table
+            table.add_row([receiver, subject, date, fromAddress]) 
+        htmlTable =  table.get_html_string()
+        fullHtml = generateHtml(htmlTable)
+        
+        #TODO change from my email to the variable "email"
+        sendEmails("ahewitt@heartlandcoop.com", fullHtml) # sends an email to the address and a table of the info
+        # emailMessage = ""
+        table = PrettyTable() # Reset table
+
+
+    # Version where you can write it to a file and then send the file
+    # with open("email_summary.txt", "w", encoding='utf-8') as outfile:
+    #     outfile.write("---Email Summary---\n")
+    #     for email, value in fJson.items():
             
-            outfile.write(f"Email: {email}\n")
-            for item in value:
-                #print(num)
+    #         outfile.write(f"Email: {email}\n")
+    #         for item in value:
+    #             #print(num)
 
-                subject = f"SUBJECT: {item['attributes']['subject']}"
-                date = f"DATE: {item['attributes']['date']}"
-                fromAddress = f"FROM ADDRESS: {str(item['attributes']['fromAddress'][0])}"
-                outfile.write(f"\t{date}\n")
-                outfile.write(f"\t{fromAddress}\n")
-                outfile.write(f"\t{subject}\n")
-                outfile.write("\n")
+    #             subject = f"SUBJECT: {item['attributes']['subject']}"
+    #             date = f"DATE: {item['attributes']['date']}"
+    #             fromAddress = f"FROM ADDRESS: {str(item['attributes']['fromAddress'][0])}"
+    #             outfile.write(f"\t{date}\n")
+    #             outfile.write(f"\t{fromAddress}\n")
+    #             outfile.write(f"\t{subject}\n")
+    #             outfile.write("\n")
 
-    outfile.close()
+    # outfile.close()
+
+# Generate the html string for the email including styling and table
+def generateHtml(table):
+    fullHtml = """
+        <html>
+            <head>
+                <style>
+                    table, th, td { border: 1px solid black; }
+                    th, td { padding: 5px; }
+                </style>
+            </head>
+            %s
+
+        </html>
+            """% table
+    
+    return fullHtml
