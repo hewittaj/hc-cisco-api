@@ -2,11 +2,12 @@
 This is an API to retrieve all spam messages for each user in the company.
 
 ## Necessary Installs
-- `pip install email`
 - `pip install prettytable`
+- `pip install requests`
 
 ## Notes
 - You will need to rename the .json-example to info.json and fill in your company's information to get this working properly.
+- Run program by going to directory and running `virtual-env/bin/python app/main.py`
 
 ## Resources Used
 ### Cisco Documentation
