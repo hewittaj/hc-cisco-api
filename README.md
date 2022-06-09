@@ -10,7 +10,7 @@ This is an API to retrieve all spam messages for each user in the company.
 - Run program by going to directory and running `virtual-env/bin/python app/main.py`
 
 ## Summary Email Example
-<img src="hc-cisco-api/images/'Email Example'">
+<img src="images/email_example.png">
 
 ## Resources Used
 
