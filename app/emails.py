@@ -105,7 +105,7 @@ def loadSpamEmails():
 
         for item in value:
             # Add info to variables
-            receiver = str(item['attributes']['envelopeRecipient'])
+            receiver = str(item['attributes']['envelopeRecipient'][0])
             subject = item['attributes']['subject']
             date = item['attributes']['date']
             fromAddress = str(item['attributes']['fromAddress'][0])
@@ -118,7 +118,6 @@ def loadSpamEmails():
         #TODO change from my email to the variable "email"
         sendEmails("ahewitt@heartlandcoop.com", fullHtml) # sends an email to the address and a table of the info
         # emailMessage = ""
-        table = PrettyTable() # Reset table
 
 
     # Version where you can write it to a file and then send the file
@@ -146,7 +145,7 @@ def generateHtml(table):
         <html>
             <head>
                 <style>
-                    table, th, td { border: 1px solid black; }
+                    table, th, td { border: 1px solid black; border-collapse: collapse; }
                     th, td { padding: 5px; }
                 </style>
             </head>
