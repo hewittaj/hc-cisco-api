@@ -13,20 +13,17 @@ response = {}
 server = ""
 usrPass = ""
 
-# Retrieve user/pass/server
-
+# Retrieve user/pass/server from json file
 loadedFile = json.loads(open("./app/info.json", "r").read())
 
-#Load info into variables
+#Load API authentication info into variables
 usrPass = f"{loadedFile['userId']}:{loadedFile['userPassword']}"
 server = loadedFile['smaUrl']
 
-# Setup our request using the server and username / password combo
+# Setup our request using the server and username/password combo
 request = Wrapper_API(server, usrPass, loadedFile['userId'], loadedFile['userPassword'])
 
-# Alternate way
-# response = request.getAllUsersSpam() # Gets all spam for all users, not specifying an email address
-
+# Open the hc_emails.csv file and read in all company emails. Retrieve all spam by user email and store in dictionary
 with open(hc_emails, 'r', encoding="utf-8") as csvfile:
     datareader = list(csv.reader(csvfile))
     for row in datareader:
@@ -43,14 +40,7 @@ with open(hc_emails, 'r', encoding="utf-8") as csvfile:
 with open('quarantined_mail.json', 'w', encoding='utf-8') as f:
     json.dump(all_spam, f, ensure_ascii=False, indent=4)
 
-# Get addresses and load into a list
-# addresses = getAddresses()
-
-# Get emails by each user and load it into dictionary
-# emailsByUser = getEmailsByUser(addresses)
-
-# Load spam emails and send to each user
+# Load spam emails and send quarantine report to each user
 loadedEmails = loadSpamEmails()
-# sendEmails()
 
-#print(request.status_code) # Returns status code
+#print(request.status_code) # Returns status code for testing purposes

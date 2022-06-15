@@ -16,7 +16,7 @@ import email
 import json
 import smtplib, ssl
 
-# Main App
+# Send email to the receiver with the html string created by generateHtml()
 def sendEmails(receiverEmail, table):
     # Load smtp settings and create variables
     smtpSettings = json.loads(open('smtp_settings.json', 'r', encoding='utf-8').read())
@@ -36,23 +36,25 @@ def sendEmails(receiverEmail, table):
     # message.attach(MIMEText(body, "plain"))
     message.attach(MIMEText(table, "html"))
 
-    # textFile = "email_summary.txt"
+    # The following commented out lines are if you would like to send an attachment such as a pdf
+    """
+    textFile = "email_summary.txt"
+    # Open file in binary mode
+    with open(textFile, "rb") as attachment:
+        # Add file as application/octet-stream
+        # Email client can usually download this automatically as attachment
+        part = MIMEBase("application", "octet-stream")
+        part.set_payload(attachment.read())
 
-    # # Open file in binary mode
-    # with open(textFile, "rb") as attachment:
-    #     # Add file as application/octet-stream
-    #     # Email client can usually download this automatically as attachment
-    #     part = MIMEBase("application", "octet-stream")
-    #     part.set_payload(attachment.read())
+    # Encode file in ASCII characters to send by email
+    encoders.encode_base64(part)
 
-    # # Encode file in ASCII characters to send by email
-    # encoders.encode_base64(part)
-
-    # # Add header
-    # part.add_header(
-    #     "Content-Disposition",
-    #     f"attachment; filename= {textFile}",
-    # )
+    # Add header
+    part.add_header(
+        "Content-Disposition",
+        f"attachment; filename= {textFile}",
+    )
+    """
 
     try:
         # Add attachment to message and convert message to string
@@ -87,7 +89,7 @@ def sendEmails(receiverEmail, table):
         # Close server connection
         server.close()  
 
-
+# Load the emails from the quarantine_emails.json file, generate the html for the email, and send the email to the user
 def loadSpamEmails():
     # Variables
     fJson = json.loads(open('quarantined_mail.json', 'r', encoding='utf-8').read())
@@ -110,36 +112,19 @@ def loadSpamEmails():
             date = item['attributes']['date']
             fromAddress = str(item['attributes']['fromAddress'][0])
             release = ""
+
             # Add row to table
             table.add_row([receiver, subject, date, fromAddress, release]) 
+
+        # Retrieve html string from the table and generate the html string
         htmlTable =  table.get_html_string()
         fullHtml = generateHtml(htmlTable)
         
-        #TODO change from my email to the variable "email"
-        sendEmails("ahewitt@heartlandcoop.com", fullHtml) # sends an email to the address and a table of the info
-        # emailMessage = ""
+        # TODO change from my email to the variable "email"
+        # Sends an email to the address in the variable "email" and a table of reported spam.
+        sendEmails("ahewitt@heartlandcoop.com", fullHtml) 
 
-
-    # Version where you can write it to a file and then send the file
-    # with open("email_summary.txt", "w", encoding='utf-8') as outfile:
-    #     outfile.write("---Email Summary---\n")
-    #     for email, value in fJson.items():
-            
-    #         outfile.write(f"Email: {email}\n")
-    #         for item in value:
-    #             #print(num)
-
-    #             subject = f"SUBJECT: {item['attributes']['subject']}"
-    #             date = f"DATE: {item['attributes']['date']}"
-    #             fromAddress = f"FROM ADDRESS: {str(item['attributes']['fromAddress'][0])}"
-    #             outfile.write(f"\t{date}\n")
-    #             outfile.write(f"\t{fromAddress}\n")
-    #             outfile.write(f"\t{subject}\n")
-    #             outfile.write("\n")
-
-    # outfile.close()
-
-# Generate the html string for the email including styling and table
+# Generate the html string for the email including styling and the report table
 def generateHtml(table):
     fullHtml = """
         <html>

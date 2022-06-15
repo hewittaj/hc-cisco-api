@@ -114,4 +114,3 @@ class Wrapper_API(object):
         finally:
             if r:
                 r.close()
-
