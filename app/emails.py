@@ -99,7 +99,7 @@ def loadSpamEmails():
     # Loop through json file and create table to send as email
     for email, value in fJson.items():
         # Create fields
-        tableFields = ["Receiver Address", "Subject", "Date", "From Address"]
+        tableFields = ["Receiver Address", "Subject", "Date", "From Address", "Release"]
         table = PrettyTable()
         table.field_names = tableFields 
 
@@ -109,9 +109,9 @@ def loadSpamEmails():
             subject = item['attributes']['subject']
             date = item['attributes']['date']
             fromAddress = str(item['attributes']['fromAddress'][0])
-           
+            release = ""
             # Add row to table
-            table.add_row([receiver, subject, date, fromAddress]) 
+            table.add_row([receiver, subject, date, fromAddress, release]) 
         htmlTable =  table.get_html_string()
         fullHtml = generateHtml(htmlTable)
         
@@ -149,6 +149,8 @@ def generateHtml(table):
                     th, td { padding: 5px; }
                 </style>
             </head>
+            <p> This is a summary of the emails that were quarantined by the quarantine program. If you would like a message released please reply to this email and 
+                edit the release field with a "Yes".</p>
             %s
 
         </html>

@@ -1,5 +1,8 @@
 # CSV Files
 hc_emails.csv
+hc_emails_copy.csv
+hc_emails_original.csv
+
 # JSON Files
 addresses.json
 apppassword.json
