@@ -134,8 +134,7 @@ def generateHtml(table):
                     th, td { padding: 5px; }
                 </style>
             </head>
-            <p> This is a summary of the emails that were quarantined by the quarantine program. If you would like a message released please reply to this email and 
-                edit the release field with a "Yes".</p>
+            <p>This is a summary of the emails that were quarantined by our system. If you would like a message released, please forward this email to support@heartlandcoop.com and edit the release field with a "Yes".</p>
             %s
 
         </html>
