@@ -101,20 +101,20 @@ def loadSpamEmails():
     # Loop through json file and create table to send as email
     for email, value in fJson.items():
         # Create fields
-        tableFields = ["Receiver Address", "Subject", "Date", "From Address", "Release"]
+        tableFields = ["Subject", "Date", "From Address", "Release"]
         table = PrettyTable()
         table.field_names = tableFields 
 
         for item in value:
             # Add info to variables
-            receiver = str(item['attributes']['envelopeRecipient'][0])
+            # receiver = str(item['attributes']['envelopeRecipient'][0])
             subject = item['attributes']['subject']
             date = item['attributes']['date']
             fromAddress = str(item['attributes']['fromAddress'][0])
             release = ""
 
             # Add row to table
-            table.add_row([receiver, subject, date, fromAddress, release]) 
+            table.add_row([subject, date, fromAddress, release]) 
 
         # Retrieve html string from the table and generate the html string
         htmlTable =  table.get_html_string()
@@ -122,7 +122,7 @@ def loadSpamEmails():
         
         # TODO change from my email to the variable "email"
         # Sends an email to the address in the variable "email" and a table of reported spam.
-        sendEmails("ahewitt@heartlandcoop.com", fullHtml) 
+        sendEmails(email, fullHtml) 
 
 # Generate the html string for the email including styling and the report table
 def generateHtml(table):
